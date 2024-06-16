@@ -1,0 +1,229 @@
+.app {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  color: white;
+}
+
+h1 {
+  font-family: "Product Sans";
+  font-size: 90px;
+  font-weight: 500;
+  margin: 40px;
+}
+
+.modal {
+	position: fixed;
+	left: 0;
+	z-index: 200;
+	top: 0;
+	width: 100%;
+	height: 100%;
+  opacity: 0;
+	visibility: hidden;
+	transform: scale(1.2);
+  background-color: rgba(0, 0, 0, 0.6);
+	transition: visibility 0s linear 0.25s, opacity 0.25s 0s, transform 0.25s;
+}
+
+.modal .modal-content {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 30rem;
+  border-radius: 10px;
+  padding: 20px;
+  background-color: #303030;
+}
+
+.modal.open {
+  opacity: 1;
+  visibility: visible;
+  transform: scale(1);
+  transition: visibility 0s linear 0s, opacity 0.25s 0s, transform 0.25s;
+}
+
+.modal .modal-content .title {
+  font-weight: 500;
+}
+
+.modal .modal-content .input-section {
+  margin: 20px 0;
+}
+
+.modal .modal-content .input-box {
+  display: flex;
+  flex-direction: column;
+  margin: 20px 0;
+
+}
+
+.modal-content .input-box .placeholder {
+  font-size: 13px;
+  margin: 5px 0;
+}
+
+.modal-content .input-box input {
+  border-radius: 5px;
+  border-bottom-left-radius: 0;
+  border-bottom-right-radius: 0;
+  background-color: #252525;
+  padding: 0 10px;
+  height: 35px;
+  border: none;
+  outline: none;
+  color: white;
+  font-size: 15px;
+}
+
+.modal-content .input-box input:focus {
+  border-bottom: #a8c7fa solid 2px;
+}
+
+.modal .modal-content .btn-container {
+  margin-top: 10px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.modal-content .btn-container button {
+  width: 70px;
+  height: 35px;
+  border: none;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 99px;
+}
+
+.modal-content .btn-container .action-btn {
+  background-color: rgb(145, 191, 255);
+}
+
+.modal-content .btn-container .cancel-btn {
+  background-color: transparent;
+  border: #047db7 1.5px solid;
+  color: rgb(145, 191, 255);
+}
+
+.modal-content .btn-container .cancel-btn:hover {
+  background-color: #404040;
+}
+
+.modal-content .btn-container .action-btn:hover {
+  background-color: rgb(119, 176, 255);
+}
+
+.modal-content .btn-container .action-btn:disabled {
+  background-color: #404040;
+  cursor: default;
+  color: rgba(255, 255, 255, 0.4);
+}
+
+.app .search {
+  display: flex;
+  padding: 0.8rem 15px;
+  justify-content: center;
+  align-items: center;
+  background-color: #303030;
+  border-radius: 99px;
+  font-size: 18px;
+}
+
+.app .search-icon {
+  opacity: 0.8;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+	border: 1px solid transparent;
+	-webkit-text-fill-color: white;
+	-webkit-box-shadow: 0 0 0px 1000px transparent inset;
+	transition: background-color 5000s ease-in-out 0s;
+}
+
+.search input {
+  margin-left: 10px;
+  background-color: transparent;
+  border: none;
+  width: 34rem;
+  outline: none;
+  color: white;
+  font-size: 90%;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  /* border: white solid 1px; */
+  align-items: flex-start;
+  border-radius: 10px;
+  margin-top: 20px;
+  /* width: 42.70rem; */
+  width: 45.20rem;
+  height: 24rem;
+  overflow-y: auto;
+}
+
+.shortcuts {
+  display: flex;
+  flex-wrap: wrap;
+  width: 40.20rem;
+  /* gap: 20px; */
+  gap: 10px;
+}
+
+.container {
+  scrollbar-width: none; /* Hide scrollbar for Firefox */
+}
+
+.container::-webkit-scrollbar {
+  width: 0; /* Hide scrollbar for Chrome, Safari, and Opera */
+}
+
+.add-shortcut {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+	width: 7.5rem;
+	padding: 20px 10px;
+	border-radius: 5px;
+	transition: 0.4s;
+}
+
+.add-shortcut .add-circle {
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #303030;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  font-size: 20px;
+}
+
+.add-shortcut .add-circle .add-icon {
+  font-size: 16px;
+}
+
+.add-shortcut .title {
+  width: 100%;
+  text-align: center;
+  font-size: 14px;
+  overflow:hidden; 
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
