@@ -1,0 +1,30 @@
+{
+  "chrome_url_overrides": {
+    "newtab": "dist/index.html"
+  },
+  "manifest_version": 3,
+  "name": "Chrome Home Extended",
+  "version": "1.0",
+  "permissions": [
+    "declarativeNetRequest",
+    "declarativeNetRequestWithHostAccess",
+    "activeTab"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "declarative_net_request": {
+    "rule_resources": [
+      {
+        "id": "ruleset_1",
+        "enabled": true,
+        "path": "rules.json"
+      }
+    ]
+  },
+  "description": "Chrome homepage with extended features.",
+  "icons": {
+    "32": "images/icon-32x32.png",
+    "192": "images/icon-192x192.png"
+  }
+}

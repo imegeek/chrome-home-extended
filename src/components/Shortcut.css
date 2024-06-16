@@ -1,0 +1,128 @@
+.shortcut {
+	user-select: none;
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 10px;
+	width: 7.5rem;
+	padding: 20px 10px;
+	border-radius: 5px;
+	transition: 0.4s;
+}
+
+.shortcut:hover {
+	background-color: rgba(255, 255, 255, 0.05);
+}
+
+.shortcut .menu {
+	position: absolute;
+	top: 0;
+	right: 0;
+	opacity: 0;
+	transform: translate(-5px, 10px);
+	transition: opacity 0.4s 0.2s;
+}
+
+.menu .option {
+	font-size: 14px;
+}
+
+.shortcut:hover .menu {
+	cursor: pointer;
+	opacity: 1;
+}
+
+.menu.active-menu {
+	opacity: 1;
+}
+
+.menu-option {
+	display: flex;
+	visibility: hidden;
+	overflow: hidden;
+	flex-direction: column;
+	justify-content: center;
+	position: absolute;
+	z-index: 10;
+	top: 30px;
+	left: -20px;
+	width: 0;
+	border-radius: 5px;
+	background-color: #303030;
+	transition: .2s;
+}
+
+.menu.active~.menu-option {
+	width: 100%;
+	visibility: visible;
+}
+
+.menu-option div {
+	cursor: pointer;
+	font-size: 14px;
+	padding: 8px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
+
+.menu-option div:hover {
+	background-color: #505050;
+}
+
+.shortcut .logo {
+	cursor: pointer;
+	display: flex;
+    text-decoration: none;
+	justify-content: center;
+	align-items: center;
+	width: 50px;
+	height: 50px;
+	border-radius: 50%;
+	padding: 12px;
+	background-color: #303030;
+}
+
+.shortcut .char {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 50%;
+	color: white;
+	font-size: 20px;
+	height: 100%;
+	width: 100%;
+	font-size: 15px;
+	font-weight: 700;
+	background-color: #808080;
+	animation: animate-icon 0.4s ease-in-out;
+}
+
+.logo img {
+	height: 100%;
+	animation: animate-icon 0.4s ease-in-out;
+}
+
+@keyframes animate-icon {
+	0% {
+		width: 0%;
+		height: 0%;
+	}
+
+	100% {
+		width: 100%;
+		height: 100%;
+	}
+}
+
+.shortcut .title {
+	user-select: text;
+	width: 100%;
+	text-align: center;
+	font-size: 14px;
+	overflow: hidden;
+	white-space: nowrap;
+	text-overflow: ellipsis;
+}
