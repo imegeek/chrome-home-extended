@@ -42,12 +42,18 @@ export default class Shortcut extends Component {
 	};
 
 	render() {
-		const url = this.props.shortcut.url
+		let url = this.props.shortcut.url
 		let char;
+
+		if (url.includes("://")) {
+			url = url.split("://")[1]
+		}
 
 		if (url.includes(".")) {
 			let array = url.split(".")
 			char = array[array.length - 2].charAt(0).toUpperCase()
+		} else {
+			char = url.charAt(0).toUpperCase()
 		}
 		return (
 			<div className='shortcut' ref={this.shortcut}>
@@ -67,7 +73,7 @@ export default class Shortcut extends Component {
 							(<img src={this.props.shortcut.favicon} />)
 					}
 				</a>
-				<span className="title">{this.props.shortcut.title}</span>
+				<a href={this.props.shortcut.url} className="title">{this.props.shortcut.title}</a>
 			</div>
 		)
 	}

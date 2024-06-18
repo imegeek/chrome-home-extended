@@ -21,6 +21,8 @@
 	top: 0;
 	right: 0;
 	opacity: 0;
+	padding: 3px;
+	border-radius: 5px;
 	transform: translate(-5px, 10px);
 	transition: opacity 0.4s 0.2s;
 }
@@ -34,13 +36,17 @@
 	opacity: 1;
 }
 
+.shortcut .menu:active  {
+	background-color: rgba(68, 85, 110, 0.6);
+}
+
 .menu.active-menu {
 	opacity: 1;
 }
 
 .menu-option {
-	display: flex;
-	visibility: hidden;
+	display: none;
+	/* visibility: hidden; */
 	overflow: hidden;
 	flex-direction: column;
 	justify-content: center;
@@ -51,12 +57,13 @@
 	width: 0;
 	border-radius: 5px;
 	background-color: #303030;
-	transition: .2s;
+	/* transition: .2s; */
 }
 
 .menu.active~.menu-option {
 	width: 100%;
-	visibility: visible;
+	display: flex;
+	/* visibility: visible; */
 }
 
 .menu-option div {
@@ -121,6 +128,8 @@
 	user-select: text;
 	width: 100%;
 	text-align: center;
+	color: white;
+	text-decoration: none;
 	font-size: 14px;
 	overflow: hidden;
 	white-space: nowrap;
