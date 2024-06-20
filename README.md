@@ -12,6 +12,10 @@ chrome-home-extended is a powerful Chrome extension designed to enhance your bro
 
 <div align="center">
 <img src="https://github.com/imegeek/chrome-home-extended/assets/63346676/785fc650-0142-4cf3-9783-2d7dd80b583c">
+
+<img src="https://github.com/imegeek/chrome-home-extended/assets/63346676/ca866a31-d88c-4bab-b552-d9713cb3e27c">
+
+<img src="https://github.com/imegeek/chrome-home-extended/assets/63346676/4b1ec469-8385-4b39-9162-1f3207f85474">
 </div>
 
 ## Installation

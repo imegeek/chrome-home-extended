@@ -19,6 +19,7 @@ body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  background-color: #202020;
+  background-color: var(--background-color-0);
+  background-size: cover;
 }
 
