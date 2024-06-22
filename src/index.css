@@ -21,5 +21,6 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: var(--background-color-0);
   background-size: cover;
+  /* transition: 0.4s; */
 }
 
