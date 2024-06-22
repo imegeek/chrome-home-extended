@@ -11,39 +11,35 @@ h1 {
   font-family: "Product Sans";
   font-size: 90px;
   font-weight: 500;
-  margin: 0;
+  transition: 0.4s;
 }
 
-.white-logo {
-  margin: 40px;
-}
-
-.colored-logo  {
+.google-logo {
   display: flex;
-  margin: 40px;
+  color: white;
 }
 
-.colored-logo :nth-child(1) {
-  color:#4285F4;
-}
-
-.colored-logo :nth-child(2) {
-  color: #EA4335;
-}
-
-.colored-logo :nth-child(3) {
-  color: #FBBC05;
-}
-
-.colored-logo :nth-child(4) {
+.google-logo.colored :nth-child(1) {
   color: #4285F4;
 }
 
-.colored-logo :nth-child(5) {
+.google-logo.colored :nth-child(2) {
+  color: #EA4335;
+}
+
+.google-logo.colored :nth-child(3) {
+  color: #FBBC05;
+}
+
+.google-logo.colored :nth-child(4) {
+  color: #4285F4;
+}
+
+.google-logo.colored :nth-child(5) {
   color: #34A853;
 }
 
-.colored-logo :nth-child(6) {
+.google-logo.colored :nth-child(6) {
   color: #EA4335;
 }
 
@@ -70,8 +66,7 @@ h1 {
   background-color: var(--background-color-c);
 }
 
-.customize.active-menu
-{
+.customize.active-menu {
   transform: translateX(0);
 }
 
@@ -93,7 +88,9 @@ h1 {
 }
 
 .menu .menu-wrapper {
+  position: relative;
   display: flex;
+  overflow: hidden;
   flex-direction: column;
   width: calc(100% - 20px);
   height: calc(100% - 40px);
@@ -105,6 +102,7 @@ h1 {
 .menu .menu-wrapper .menu-content {
   /* width: calc(100% - 20px);
   height: calc(100% - 20px); */
+  user-select: none;
   display: flex;
   flex-direction: column;
   gap: 10px;
@@ -116,11 +114,17 @@ h1 {
 }
 
 .menu-content .content-title {
-  font-size: 14px;
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.menu-content .sub-title {
+  font-size: 13px;
   font-weight: 500;
 }
 
 .menu-content .theme {
+  position: relative;
   display: flex;
   align-items: stretch;
   border-radius: 99px;
@@ -129,10 +133,20 @@ h1 {
   border: var(--background-color-e) solid 1.5px;
 }
 
+.menu-content .theme .theme-overlay {
+  position: absolute;
+  /* height: calc(100% - 4px); */
+  border-radius: 99px;
+  color: transparent;
+  background-color: var(--background-color-i);
+  transition: 0.2s;
+}
+
 .menu-content .theme .theme-btn {
   cursor: pointer;
   flex: 1;
   display: flex;
+  z-index: 2;
   justify-content: center;
   align-items: center;
   gap: 10px;
@@ -143,18 +157,18 @@ h1 {
 }
 
 .menu-content .theme .theme-btn:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: var(--background-color-k);
 }
 
 .theme .theme-btn.active-theme {
   cursor: default;
   color: var(--background-color-b);
-  background-color: var(--background-color-i);
+  /* background-color: var(--background-color-i); */
 }
 
-.theme .theme-btn.active-theme:hover {
+/* .theme .theme-btn.active-theme:hover {
   background-color: var(--background-color-i);
-}
+} */
 
 .theme .theme-btn .theme-icon {
   font-size: 16px;
@@ -210,9 +224,9 @@ h1 {
 }
 
 .background .bg-overview img {
-	width: 100%;
-	height: 100%;
-	object-fit: cover;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .background .change-btn {
@@ -223,12 +237,27 @@ h1 {
   height: 35px;
   gap: 5px;
   color: var(--text-color);
+  transition: 0.4s;
   background-color: var(--background-color-e);
+  /* background-color: #a1c1f4; */
   border-radius: 5px;
+}
+
+.background .change-btn:hover {
+  background-color: var(--background-color-5);
 }
 
 .background .change-btn input {
   display: none;
+}
+
+.menu-content .background .bg-icon {
+  font-size: 18px;
+}
+
+.menu-content .background .bg-title {
+  font-size: 12px;
+  font-weight: 500;
 }
 
 .menu-content .show-shortcut {
@@ -237,12 +266,8 @@ h1 {
   align-items: center;
 }
 
-.show-shortcut .show-title {
-  font-size: 14px;
-  font-weight: 500;
-}
-
 .show-shortcut .switch {
+  cursor: pointer;
   position: relative;
   display: flex;
   align-items: center;
@@ -278,24 +303,177 @@ h1 {
   transition: all ease 0.4s;
 }
 
-.switch input:checked + .slider {
+.switch input:checked+.slider {
   background-color: var(--background-color-i);
 }
 
-.switch input:checked + .slider::before {
+.switch input:checked+.slider::before {
   width: 14px;
   height: 14px;
   background-color: var(--background-color-j);
   left: 18px;
 }
 
-.menu-content .background .bg-icon {
-  font-size: 18px;
+.menu-content .hr {
+  width: 100%;
+  height: 0.6px;
+  background-color: var(--background-color-h);
 }
 
-.menu-content .background .bg-title {
+.menu-content .clear-shortcut {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.menu-content .clear-btn {
+  display: flex;
+  width: 30px;
+  height: 30px;
+  cursor: pointer;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  border-radius: 50%;
+  transition: 0.4s;
+  color: var(--background-color-c);
+  background-color: var(--background-color-i);
+}
+
+.menu-content .clear-icon {
+  font-size: 20px;
+}
+
+.menu-content .clear-btn:hover {
+  background-color: var(--background-color-4);
+}
+
+.menu-content .settings {
+  display: flex;
+  height: 35px;
+  gap: 10px;
+  align-items: stretch;
+}
+
+.menu-content .setting-btn input {
+  display: none;
+}
+
+.menu-content .setting-btn {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 4px;
+  width: 100%;
+  height: 100%;
   font-size: 12px;
+  border: none;
+  cursor: pointer;
+  border-radius: 99px;
+  transition: 0.4s;
+  color: var(--background-color-0);
+  background-color: var(--background-color-i);
+}
+
+.menu-content .setting-btn:hover {
+  background-color: var(--background-color-4);
+}
+
+.menu-content .setting-btn .setting-icon {
+  font-size: 17px;
+}
+
+.menu-content .setting-btn span {
+  font-family: "Poppins";
   font-weight: 500;
+}
+
+.menu-content .imp-exp {
+  border-radius: 99px;
+  font-size: 14px;
+}
+
+.confirm-box {
+  position: absolute;
+  bottom: 10px;
+  transform: translateX(500px);
+  width: calc(100% - 20px);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 10px;
+  margin-bottom: 0;
+  padding: 10px;
+  border-radius: 8px;
+  transition: 0.4s;
+  background-color: var(--background-color-c);
+}
+
+.confirm-box.active-confirm {
+  transform: translateX(0);
+}
+
+.confirm-box .confirm-title {
+  font-size: 15px;
+  font-weight: 500;
+}
+
+.confirm-box .confirm {
+  display: flex;
+  align-items: stretch;
+  height: 35px;
+  gap: 10px;
+}
+
+.confirm-box .confirm .confirm-btn {
+  flex: 1;
+}
+
+.confirm-box .confirm-btn button {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+  width: 100%;
+  height: 100%;
+  border: none;
+  cursor: pointer;
+  border-radius: 99px;
+  transition: 0.4s;
+  color: var(--background-color-0);
+  background-color: var(--background-color-i);
+}
+
+.confirm-box .confirm-btn button:hover {
+  background-color: var(--background-color-4);
+}
+
+.confirm-box .confirm-icon {
+  font-size: 15px;
+}
+
+.confirm-box .confirm-btn button span {
+  font-family: "Poppins";
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.menu-status {
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  bottom: 10px;
+  margin: 10px;
+  padding: 10px;
+  margin-bottom: 0;
+  width: calc(100% - 20px);
+  transition: 0.4s;
+  opacity: 0;
+}
+
+.menu-status.active-status {
+  opacity: 1;
 }
 
 .undo-toast {
@@ -418,12 +596,43 @@ h1 {
   height: 35px;
   border: none;
   outline: none;
-  color: var(--background-color-0);
+  color: var(--background-color);
   font-size: 15px;
 }
 
 .modal-content .input-box input:focus {
   border-bottom: var(--background-color-i) solid 2px;
+}
+
+.modal-content .favicon-box {
+  display: flex;
+  flex-direction: column;
+}
+
+.modal-content .favicon-box .f-title {
+  font-size: 13px;
+}
+
+.modal-content .favicon-box .favicon-icons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 20px 0;
+}
+
+.modal-content .favicon-icons .favicon {
+  padding: 4px;
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+}
+
+.modal-content .favicon.active-favicon {
+  border: 1.5px solid var(--background-color-i);
+}
+
+.modal-content .favicon img {
+  height: 100%;
 }
 
 .modal-content .dropdown .dropdown-box {
@@ -469,17 +678,18 @@ h1 {
 }
 
 .modal-content .btn-container .action-btn {
-  background-color: rgb(145, 191, 255);
+  color: var(--background-color-0);
+  background-color: var(--background-color-i);
 }
 
 .modal-content .btn-container .cancel-btn {
   background-color: transparent;
-  border: #047db7 1.5px solid;
-  color: rgb(145, 191, 255);
+  border: var(--background-color-e) 1.5px solid;
+  color: var(--background-color-i);
 }
 
 .modal-content .btn-container .cancel-btn:hover {
-  background-color: #404040;
+  background-color: var(--background-color-k);
 }
 
 .modal-content .btn-container .action-btn:hover {
@@ -487,9 +697,9 @@ h1 {
 }
 
 .modal-content .btn-container .action-btn:disabled {
-  background-color: #404040;
+  background-color: var(--background-color-k);
   cursor: default;
-  color: rgba(255, 255, 255, 0.4);
+  color: var(--background-color-l);
 }
 
 .app .search {
@@ -500,6 +710,7 @@ h1 {
   background-color: var(--background-color-a);
   border-radius: 99px;
   font-size: 18px;
+  transition: 0.4s;
 }
 
 .app .search-icon {
@@ -545,7 +756,7 @@ select:-webkit-autofill:focus {
   overflow-y: auto;
 }
 
-.container.hide-shortcuts {
+.container.hide {
   visibility: hidden;
 }
 
@@ -555,6 +766,10 @@ select:-webkit-autofill:focus {
   width: 40.20rem;
   /* gap: 20px; */
   gap: 10px;
+}
+
+.shortcuts.center {
+  justify-content: center;
 }
 
 .container {
@@ -576,7 +791,6 @@ select:-webkit-autofill:focus {
   width: 7.5rem;
   padding: 20px 10px;
   border-radius: 5px;
-  transition: 0.4s;
 }
 
 .add-shortcut .add-circle {
@@ -589,6 +803,7 @@ select:-webkit-autofill:focus {
   height: 50px;
   border-radius: 50%;
   font-size: 20px;
+  transition: 0.4s;
 }
 
 .add-shortcut .add-circle .add-icon {
@@ -604,11 +819,11 @@ select:-webkit-autofill:focus {
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  transition: 0.4s;
 }
 
 .wrapper {
   cursor: pointer;
-  transition: transform 0.4s;
 }
 
 .wrapper.dragging {

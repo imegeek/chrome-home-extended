@@ -61,7 +61,7 @@ export default class Shortcut extends Component {
 					<FaIcons.FaEllipsisV className="option" />
 				</div>
 				<div className="menu-option">
-					<div onClick={() => this.props.fillModal(this.props.shortcut, this.props.index)}>Edit shortcut</div>
+					<div onClick={() => this.props.editModal(this.props.shortcut, this.props.index)}>Edit shortcut</div>
 					<div onClick={() => this.props.remove(this.props.index)}>Remove</div>
 				</div>
 				<a href={this.props.shortcut.url} className="logo">
