@@ -90,13 +90,34 @@ h1 {
 .menu .menu-wrapper {
   position: relative;
   display: flex;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   flex-direction: column;
+  justify-content: space-between;
   width: calc(100% - 20px);
   height: calc(100% - 40px);
   margin: 10px;
   border-radius: 16px;
   background-color: var(--background-color-f);
+}
+
+.menu .menu-wrapper::-webkit-scrollbar {
+  width: 4px;
+}
+
+.menu .menu-wrapper::-webkit-scrollbar-track {
+  margin-block: 10px;
+  border-radius: 99px;
+}
+
+.menu .menu-wrapper::-webkit-scrollbar-thumb {
+  background-color: var(--background-color-i);
+  border-radius: 99px;
+  transition: 0.4s;
+}
+
+.menu .menu-wrapper::-webkit-scrollbar-thumb:hover {
+  background-color: var(--background-color-h);
 }
 
 .menu .menu-wrapper .menu-content {
@@ -323,29 +344,35 @@ h1 {
 .menu-content .clear-shortcut {
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  border-radius: 5px;
+  margin: 10px;
 }
 
-.menu-content .clear-btn {
+.clear-shortcut .clear-content {
+  position: absolute;
+  left: 0;
   display: flex;
-  width: 30px;
-  height: 30px;
-  cursor: pointer;
-  justify-content: center;
   align-items: center;
-  border: none;
-  border-radius: 50%;
-  transition: 0.4s;
-  color: var(--background-color-c);
-  background-color: var(--background-color-i);
+  justify-content: space-between;
+  width: calc(100% - 30px);
+  margin: 15px;
+  padding: 5px;
+  cursor: pointer;
+  border-radius: 99px;
+  transition: 0.2s;
+}
+
+.menu-content .clear-shortcut .clear-content:hover {
+  background-color: var(--background-color-k);
+}
+
+.clear-shortcut .clear-title {
+  font-size: 13px;
+  font-weight: 500;
 }
 
 .menu-content .clear-icon {
-  font-size: 20px;
-}
-
-.menu-content .clear-btn:hover {
-  background-color: var(--background-color-4);
+  font-size: 22px;
 }
 
 .menu-content .settings {
@@ -394,16 +421,23 @@ h1 {
   font-size: 14px;
 }
 
+.menu-end {
+  position: relative;
+}
+
 .confirm-box {
-  position: absolute;
-  bottom: 10px;
+  /* position: absolute; */
+  /* bottom: 10px; */
+  position: relative;
+  z-index: 2;
   transform: translateX(500px);
   width: calc(100% - 20px);
   display: flex;
   flex-direction: column;
   gap: 10px;
   margin: 10px;
-  margin-bottom: 0;
+  /* margin-top: auto; */
+  /* margin-bottom: 0; */
   padding: 10px;
   border-radius: 8px;
   transition: 0.4s;
@@ -461,6 +495,8 @@ h1 {
 
 .menu-status {
   position: absolute;
+  cursor: default;
+  user-select: none;
   display: flex;
   justify-content: center;
   bottom: 10px;
