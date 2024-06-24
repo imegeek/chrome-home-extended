@@ -417,6 +417,9 @@ export class App extends Component {
   }
 
   handleMenu = () => {
+    if (!this.menu.current.classList.contains("active-menu")) {
+      this.confirm.current.classList.remove("active-confirm")
+    }
     this.menu.current.classList.toggle("active-menu")
   }
 
@@ -551,7 +554,6 @@ export class App extends Component {
     const preview = overview.querySelector("img")
 
     if (background) {
-      console.log(background);
       preview.src = background
       overview.style.display = "block"
       document.body.style.backgroundImage = `url(${background})`;
@@ -622,10 +624,12 @@ export class App extends Component {
     this.timer = setTimeout(() => {
       this.status.current.classList.remove("active-status")
     }, 3000);
+
   }
 
   importSettings = async (event) => {
     const file = event.target.files[0]
+    this.confirm.current.classList.remove("active-confirm")
 
     if (file) {
       const data = await new Promise((resolve, reject) => {
@@ -637,7 +641,7 @@ export class App extends Component {
 
       try {
         const settings = JSON.parse(data);
-        const {theme, background, color} = JSON.parse(data);
+        const { theme, background, color } = JSON.parse(data);
 
         if (!settings.shortcuts) {
           throw new Error()
@@ -806,6 +810,18 @@ export class App extends Component {
     }
   }
 
+  handleClick = (event) => {
+    const editElement = this.menu.current.querySelector(".edit")
+    const menuElement = this.menu.current.querySelector(".menu")
+
+    if (
+      this.menu.current.classList.contains("active-menu")
+      && !editElement.contains(event.target) && !menuElement.contains(event.target)
+    ) {
+      this.menu.current.classList.remove("active-menu")
+    }
+  }
+
   componentDidMount() {
     this.showShortcuts()
     this.applyTheme()
@@ -817,6 +833,8 @@ export class App extends Component {
       if (element.current)
         element.current.addEventListener('keydown', this.handleEnterPress);
     })
+
+    document.body.addEventListener("click", this.handleClick)
   }
 
   componentWillUnmount() {
@@ -826,6 +844,8 @@ export class App extends Component {
       if (element.current)
         element.current.removeEventListener('keydown', this.handleEnterPress);
     })
+
+    document.body.removeEventListener("click", this.handleClick)
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -878,103 +898,108 @@ export class App extends Component {
               <MdIcons.MdModeEdit />Customize Homepage
             </span>
             <div className="menu-wrapper">
+              <div className="menu-container">
 
-              <div className="menu-content">
-                <span className="content-title">Appearance</span>
-                <div className="theme">
-                  <div className="theme-overlay"></div>
-                  <div className={`theme-btn ${this.state.theme === "light" && "active-theme"}`} onClick={() => this.handleTheme("light")}>
-                    <MdIcons.MdOutlineWbSunny className="theme-icon" />
-                    <MdIcons.MdOutlineCheck className="theme-check" />
-                    <span className="theme-title">Light</span>
-                  </div>
-                  <div className={`theme-btn ${this.state.theme === "dark" && "active-theme"}`} onClick={() => this.handleTheme("dark")}>
-                    <MdIcons.MdOutlineDarkMode className="theme-icon" />
-                    <MdIcons.MdOutlineCheck className="theme-check" />
-                    <span className="theme-title">Dark</span>
-                  </div>
-                  <div className={`theme-btn ${this.state.theme === "device" && "active-theme"}`} onClick={() => this.handleTheme("device")}>
-                    <MdIcons.MdComputer className="theme-icon" />
-                    <MdIcons.MdOutlineCheck className="theme-check" />
-                    <span className="theme-title">Device</span>
-                  </div>
-                </div>
-              </div>
-
-              <div className="menu-content">
-                <span className="content-title">Background</span>
-                <div className="background">
-                  <div className="bg-overview" ref={this.preview}>
-                    <div className="remove-bg" onClick={this.removeBackground}>
-                      <MdIcons.MdClose className="close-icon" />
+                <div className="menu-content">
+                  <span className="content-title">Appearance</span>
+                  <div className="theme">
+                    <div className="theme-overlay"></div>
+                    <div className={`theme-btn ${this.state.theme === "light" && "active-theme"}`} onClick={() => this.handleTheme("light")}>
+                      <MdIcons.MdOutlineWbSunny className="theme-icon" />
+                      <MdIcons.MdOutlineCheck className="theme-check" />
+                      <span className="theme-title">Light</span>
                     </div>
-                    <img src="" alt="preview-bg" />
+                    <div className={`theme-btn ${this.state.theme === "dark" && "active-theme"}`} onClick={() => this.handleTheme("dark")}>
+                      <MdIcons.MdOutlineDarkMode className="theme-icon" />
+                      <MdIcons.MdOutlineCheck className="theme-check" />
+                      <span className="theme-title">Dark</span>
+                    </div>
+                    <div className={`theme-btn ${this.state.theme === "device" && "active-theme"}`} onClick={() => this.handleTheme("device")}>
+                      <MdIcons.MdComputer className="theme-icon" />
+                      <MdIcons.MdOutlineCheck className="theme-check" />
+                      <span className="theme-title">Device</span>
+                    </div>
                   </div>
-                  <label className="change-btn">
-                    <input type="file" accept="image/*" ref={this.image} onChange={this.handleBackground} />
-                    <MdIcons.MdOutlineInsertPhoto className="bg-icon" />
-                    <span className="bg-title">Change background</span>
-                  </label>
                 </div>
-              </div>
 
-              <div className="menu-content">
-                <span className="content-title">Shortcuts</span>
-                <div className="show-shortcut">
-                  <span className="sub-title">Show shortcuts</span>
-                  <label className="switch">
-                    <input type="checkbox" name="checkbox" checked={this.state.showShortcuts === "true" ? true : false} onChange={this.handleShortcuts} />
-                    <div className="slider"></div>
-                  </label>
+                <div className="menu-content">
+                  <span className="content-title">Background</span>
+                  <div className="background">
+                    <div className="bg-overview" ref={this.preview}>
+                      <div className="remove-bg" onClick={this.removeBackground}>
+                        <MdIcons.MdClose className="close-icon" />
+                      </div>
+                      <img src="" alt="preview-bg" />
+                    </div>
+                    <label className="change-btn">
+                      <input type="file" accept="image/*" ref={this.image} onChange={this.handleBackground} />
+                      <MdIcons.MdOutlineInsertPhoto className="bg-icon" />
+                      <span className="bg-title">Change background</span>
+                    </label>
+                  </div>
                 </div>
-                <div className="hr"></div>
-                <div className="clear-shortcut">
-                  <span className="sub-title">Clear shortcuts</span>
-                  <button className="clear-btn" onClick={() => this.executeConfirm(this.clearShortcuts)}>
-                    <MdIcons.MdDelete className="clear-icon" />
-                  </button>
-                </div>
-              </div>
 
-              <div className="menu-content">
-                <span className="content-title">Settings</span>
-                <div className="settings">
-                  <label className="setting-btn">
-                    <input type="file" accept="json/*" onChange={this.importSettings} />
-                    <MdIcons.MdOutlineFileDownload className="setting-icon" />
-                    <span>Import</span>
-                  </label>
-                  <button className="setting-btn" onClick={this.exportSettings}>
-                    <MdIcons.MdOutlineFileUpload className="setting-icon" />
-                    <span>Export</span>
-                  </button>
-                  <button className="setting-btn" onClick={() => this.executeConfirm(this.clearSettings)}>
-                    <MdIcons.MdDeleteForever className="setting-icon" />
-                    <span>Clear All</span>
-                  </button>
+                <div className="menu-content">
+                  <span className="content-title">Shortcuts</span>
+                  <div className="show-shortcut">
+                    <span className="sub-title">Show shortcuts</span>
+                    <label className="switch">
+                      <input type="checkbox" name="checkbox" checked={this.state.showShortcuts === "true" ? true : false} onChange={this.handleShortcuts} />
+                      <div className="slider"></div>
+                    </label>
+                  </div>
+                  <div className="hr"></div>
+                  <div className="clear-shortcut">
+                    <div className="clear-content" onClick={() => this.executeConfirm(this.clearShortcuts)}>
+                      <span className="clear-title">Clear all shortcuts</span>
+                        <MdIcons.MdRotateLeft className="clear-icon" />
+                    </div>
+                  </div>
                 </div>
-              </div>
 
-              <div className="confirm-box" ref={this.confirm}>
-                <span className="confirm-title">Are you sure?</span>
-                <div className="confirm">
-                  <div className="confirm-btn">
-                    <button>
-                      <MdIcons.MdCheckCircleOutline className="confirm-icon" />
-                      <span className="confirm-y">Confirm</span>
+                <div className="menu-content">
+                  <span className="content-title">Settings</span>
+                  <div className="settings">
+                    <label className="setting-btn">
+                      <input type="file" accept="json/*" onChange={this.importSettings} />
+                      <MdIcons.MdOutlineFileDownload className="setting-icon" />
+                      <span>Import</span>
+                    </label>
+                    <button className="setting-btn" onClick={this.exportSettings}>
+                      <MdIcons.MdOutlineFileUpload className="setting-icon" />
+                      <span>Export</span>
+                    </button>
+                    <button className="setting-btn" onClick={() => this.executeConfirm(this.clearSettings)}>
+                      <MdIcons.MdDeleteForever className="setting-icon" />
+                      <span>Clear All</span>
                     </button>
                   </div>
-                  <div className="confirm-btn" onClick={() => this.confirm.current.classList.remove("active-confirm")}>
-                    <button>
-                      <MdIcons.MdOutlineCancel className="confirm-icon" />
-                      <span>Cancel</span>
-                    </button>
-                  </div>
                 </div>
+
               </div>
 
-              <div className="menu-status" ref={this.status}>
-                <span className="status-title"></span>
+              <div className="menu-end">
+                <div className="confirm-box" ref={this.confirm}>
+                  <span className="confirm-title">Are you sure?</span>
+                  <div className="confirm">
+                    <div className="confirm-btn">
+                      <button>
+                        <MdIcons.MdCheckCircleOutline className="confirm-icon" />
+                        <span className="confirm-y">Confirm</span>
+                      </button>
+                    </div>
+                    <div className="confirm-btn" onClick={() => this.confirm.current.classList.remove("active-confirm")}>
+                      <button>
+                        <MdIcons.MdOutlineCancel className="confirm-icon" />
+                        <span>Cancel</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+
+                <div className="menu-status" ref={this.status}>
+                  <span className="status-title"></span>
+                </div>
               </div>
 
             </div>
