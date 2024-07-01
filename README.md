@@ -11,11 +11,16 @@ chrome-home-extended is a powerful Chrome extension designed to enhance your bro
 ## Screenshots
 
 <div align="center">
-<img src="https://github.com/imegeek/chrome-home-extended/assets/63346676/785fc650-0142-4cf3-9783-2d7dd80b583c">
+<img src="https://github.com/imegeek/chrome-home-extended/assets/63346676/8535055f-680f-426e-8cdd-50671a19a527">
 
 <img src="https://github.com/imegeek/chrome-home-extended/assets/63346676/4b1ec469-8385-4b39-9162-1f3207f85474">
 
+<img src="https://github.com/imegeek/chrome-home-extended/assets/63346676/a9583d8a-8258-422b-9a63-88f4e2ad6489">
+
 <img src="https://github.com/imegeek/chrome-home-extended/assets/63346676/6c13ea76-ce95-43f0-96cb-f0b076d3da74">
+
+<img src="https://github.com/imegeek/chrome-home-extended/assets/63346676/d4f49255-c96f-4e20-8360-9e1725f8c652">
+
 </div>
 
 ## Installation
@@ -33,6 +38,7 @@ chrome-home-extended is a powerful Chrome extension designed to enhance your bro
 1. **Open New Tab**: Now default new tab is changed to Chrome Home Extended.
 2. **Add Shortcuts**: Use the interface to add new shortcuts. Specify the url and the name you want to assign to it.
 3. **Edit/Remove Shortcuts**: Manage your shortcuts by editing or removing them as needed.
+4. **Customize Panel**: Click on edit icon to open customization panel.
 
 ## Contributing
 

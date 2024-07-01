@@ -1,0 +1,26 @@
+.search {
+	display: flex;
+	padding: 0.8rem 18px;
+	justify-content: center;
+	align-items: center;
+	background-color: var(--background-color-a);
+	border-radius: 99px;
+	font-size: 18px;
+	transition: 0.4s;
+}
+
+.search .search-icon {
+	font-size: 15px;
+	opacity: 0.8;
+}
+
+.search input {
+	margin-left: 10px;
+	user-select: none;
+	border: none;
+	width: 34rem;
+	outline: none;
+	font-size: 90%;
+	background-color: transparent;
+	color: var(--text-color);
+}

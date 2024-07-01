@@ -5,42 +5,26 @@
   justify-content: center;
   height: 100vh;
   color: var(--text-color);
+  transition: margin-right 0.4s;
 }
 
-h1 {
-  font-family: "Product Sans";
-  font-size: 90px;
-  font-weight: 500;
-  transition: 0.4s;
+.app.active-fold {
+  margin-right: 30%;
 }
 
-.google-logo {
-  display: flex;
-  color: white;
-}
-
-.google-logo.colored :nth-child(1) {
-  color: #4285F4;
-}
-
-.google-logo.colored :nth-child(2) {
-  color: #EA4335;
-}
-
-.google-logo.colored :nth-child(3) {
-  color: #FBBC05;
-}
-
-.google-logo.colored :nth-child(4) {
-  color: #4285F4;
-}
-
-.google-logo.colored :nth-child(5) {
-  color: #34A853;
-}
-
-.google-logo.colored :nth-child(6) {
-  color: #EA4335;
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+textarea:-webkit-autofill,
+textarea:-webkit-autofill:hover,
+textarea:-webkit-autofill:focus,
+select:-webkit-autofill,
+select:-webkit-autofill:hover,
+select:-webkit-autofill:focus {
+	border: 1px solid transparent;
+	-webkit-text-fill-color: var(--text-color);
+	-webkit-box-shadow: 0 0 0px 1000px transparent inset;
+	transition: background-color 5000s ease-in-out 0s;
 }
 
 .customize {
@@ -217,9 +201,17 @@ h1 {
   position: relative;
   width: 100%;
   height: 150px;
+  padding: 1px;
   border: var(--background-color-h) solid 2px;
   border-radius: 5px;
   margin-bottom: 10px;
+}
+
+.background .bg-loading {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
 }
 
 .background .bg-overview .remove-bg {
@@ -229,24 +221,26 @@ h1 {
   position: absolute;
   right: 0;
   cursor: pointer;
-  transform: translate(7.5px, -7.5px);
+  transform: translate(8.5px, -8.5px);
   width: 25px;
   height: 25px;
   border-radius: 50%;
   border: var(--background-color-h) solid 2px;
-  background-color: #505050;
+  background-color: var(--background-color-c);
 }
 
 .bg-overview .remove-bg .close-icon {
   /* color: rgb(230, 160, 150); */
-  color: white;
+  color: var(--background-color-);
   font-size: 16px;
   font-weight: bold;
 }
 
-.background .bg-overview img {
+.background .bg-preview {
+  display: none;
   width: 100%;
   height: 100%;
+  border-radius: calc(5px - 2px);
   object-fit: cover;
 }
 
@@ -359,7 +353,7 @@ h1 {
   padding: 5px;
   cursor: pointer;
   border-radius: 99px;
-  transition: 0.2s;
+  transition: background-color 0.4s;
 }
 
 .menu-content .clear-shortcut .clear-content:hover {
@@ -510,6 +504,10 @@ h1 {
 
 .menu-status.active-status {
   opacity: 1;
+}
+
+.menu-status .status-title {
+  text-align: center;
 }
 
 .undo-toast {
@@ -729,54 +727,13 @@ h1 {
 }
 
 .modal-content .btn-container .action-btn:hover {
-  background-color: rgb(119, 176, 255);
+  background-color: var(--background-color-6);
 }
 
 .modal-content .btn-container .action-btn:disabled {
   background-color: var(--background-color-k);
   cursor: default;
   color: var(--background-color-l);
-}
-
-.app .search {
-  display: flex;
-  padding: 0.8rem 18px;
-  justify-content: center;
-  align-items: center;
-  background-color: var(--background-color-a);
-  border-radius: 99px;
-  font-size: 18px;
-  transition: 0.4s;
-}
-
-.app .search-icon {
-  font-size: 15px;
-  opacity: 0.8;
-}
-
-input:-webkit-autofill,
-input:-webkit-autofill:hover,
-input:-webkit-autofill:focus,
-textarea:-webkit-autofill,
-textarea:-webkit-autofill:hover,
-textarea:-webkit-autofill:focus,
-select:-webkit-autofill,
-select:-webkit-autofill:hover,
-select:-webkit-autofill:focus {
-  border: 1px solid transparent;
-  -webkit-text-fill-color: var(--text-color);
-  -webkit-box-shadow: 0 0 0px 1000px transparent inset;
-  transition: background-color 5000s ease-in-out 0s;
-}
-
-.search input {
-  margin-left: 10px;
-  background-color: transparent;
-  border: none;
-  width: 34rem;
-  outline: none;
-  color: var(--text-color);
-  font-size: 90%;
 }
 
 .container {
@@ -797,6 +754,8 @@ select:-webkit-autofill:focus {
 }
 
 .shortcuts {
+  /* display: grid; */
+  /* grid-template-columns: repeat(5, 1fr); */
   display: flex;
   flex-wrap: wrap;
   width: 40.20rem;
@@ -865,4 +824,19 @@ select:-webkit-autofill:focus {
 .wrapper.dragging {
   opacity: 0;
   transition: 'opacity 0.01s ease-in-out'
+}
+
+.tooltip {
+	display: none;
+	position: absolute;
+	background-color: var(--background-color-a);
+  border: solid 1px var(--text-color);
+	color: var(--text-color);
+	padding: 5px;
+	z-index: 10;
+	border-radius: 5px;
+  font-size: 14px;
+	max-width: 300px;
+	word-wrap: break-word;
+	pointer-events: none;
 }

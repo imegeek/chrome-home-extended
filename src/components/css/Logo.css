@@ -1,0 +1,36 @@
+.google-logo h1 {
+	font-family: "Product Sans", sans-serif, 'Segoe UI', Tahoma, Geneva, Verdana;
+	user-select: none;
+	font-size: 90px;
+	font-weight: 500;
+	transition: 0.4s;
+}
+
+.google-logo {
+	display: flex;
+	color: white;
+}
+
+.google-logo.colored :nth-child(1) {
+	color: #4285F4;
+}
+
+.google-logo.colored :nth-child(2) {
+	color: #EA4335;
+}
+
+.google-logo.colored :nth-child(3) {
+	color: #FBBC05;
+}
+
+.google-logo.colored :nth-child(4) {
+	color: #4285F4;
+}
+
+.google-logo.colored :nth-child(5) {
+	color: #34A853;
+}
+
+.google-logo.colored :nth-child(6) {
+	color: #EA4335;
+}

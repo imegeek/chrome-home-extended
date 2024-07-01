@@ -1,6 +1,6 @@
 import * as FaIcons from "react-icons/fa";
 import React, { Component } from 'react'
-import './Shortcut.css'
+import './css/Shortcut.css'
 
 export default class Shortcut extends Component {
 
@@ -10,19 +10,8 @@ export default class Shortcut extends Component {
 		this.menu = React.createRef()
 	}
 
-	// handleMenu = () => {
-	// 	this.menu.current.classList.toggle("active")
-	// }
-
-	componentDidMount() {
-		document.addEventListener('click', this.handleClickOutside, true);
-	}
-
-	componentWillUnmount() {
-		document.removeEventListener('click', this.handleClickOutside, true);
-	}
-
 	handleClickInside = () => {
+		document.querySelector(".tooltip").style.display = "none"
 		if (this.menu.current) {
 			if (this.menu.current.classList.contains("active")) {
 				this.menu.current.classList.remove('active', 'active-menu');
@@ -33,13 +22,21 @@ export default class Shortcut extends Component {
 			}
 		}
 	};
-
+	
 	handleClickOutside = (event) => {
 		if (this.menu.current && !this.menu.current.contains(event.target)) {
 			this.menu.current.classList.remove('active', 'active-menu');
 			this.shortcut.current.style.background = null
 		}
 	};
+
+	componentDidMount() {
+		document.addEventListener('click', this.handleClickOutside, true);
+	}
+
+	componentWillUnmount() {
+		document.removeEventListener('click', this.handleClickOutside, true);
+	}
 
 	render() {
 		let url = this.props.shortcut.url

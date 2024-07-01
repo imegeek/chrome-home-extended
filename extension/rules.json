@@ -11,7 +11,7 @@
       ]
     },
     "condition": {
-      "urlFilter": "*",
+      "urlFilter": "chrome://newtab/",
       "resourceTypes": ["xmlhttprequest", "sub_frame", "script"]
     }
   }
