@@ -2,6 +2,9 @@ import * as FaIcons from "react-icons/fa";
 import * as MdIcons from "react-icons/md";
 import { Component, createRef } from 'react'
 import Shortcut from "./components/Shortcut";
+import Spinner from "./components/Spinner";
+import Logo from "./components/Logo";
+import Search from "./components/Search";
 import './App.css'
 
 export class App extends Component {
@@ -17,39 +20,29 @@ export class App extends Component {
       showShortcuts: localStorage.getItem("showShortcuts") || "true",
       undo: null,
       input: {},
+      loading: false,
       favicons: [],
       newFavicon: null,
       saveShortcut: true,
       draggedIndex: null
     }
 
+    this.app = createRef()
+    this.tooltip = createRef()
     this.search = createRef()
     this.menu = createRef()
     this.image = createRef()
+    this.overview = createRef()
     this.preview = createRef()
     this.confirm = createRef()
     this.status = createRef()
     this.undo = createRef()
+    this.toastTimout = createRef()
     this.modal = createRef()
     this.dropdown = createRef()
     this.modalNameInput = createRef()
     this.modalUrlInput = createRef()
     this.modalFaviconInput = createRef()
-  }
-
-  getRandomDarkColor() {
-    // Generate random values for R, G, and B between 0 and 127
-    const r = Math.floor(Math.random() * 128);
-    const g = Math.floor(Math.random() * 128);
-    const b = Math.floor(Math.random() * 128);
-
-    // Convert R, G, and B to hexadecimal format and pad with leading zeros if necessary
-    const rHex = r.toString(16).padStart(2, '0');
-    const gHex = g.toString(16).padStart(2, '0');
-    const bHex = b.toString(16).padStart(2, '0');
-
-    // Combine R, G, and B values to form the full hex color code
-    return `#${rHex}${gHex}${bHex}`;
   }
 
   handleSearch = () => {
@@ -63,6 +56,14 @@ export class App extends Component {
     }
   }
 
+  onChange = (event) => {
+    this.setState({
+      input: {
+        ...this.state.input, [event.target.name]: event.target.value
+      }
+    })
+  }
+
   handleModal = () => {
     this.setState({
       input: {},
@@ -70,17 +71,9 @@ export class App extends Component {
       newFavicon: null,
       saveShortcut: true
     })
-    this.modal.current.classList.toggle("open")
     this.modalUrlInput.current.focus()
+    this.modal.current.classList.toggle("open")
     this.dropdown.current.classList.remove("active-dropdown")
-  }
-
-  onChange = (event) => {
-    this.setState({
-      input: {
-        ...this.state.input, [event.target.name]: event.target.value
-      }
-    })
   }
 
   editModal = async (data, index) => {
@@ -264,8 +257,7 @@ export class App extends Component {
     this.modal.current.classList.toggle("open")
     this.dropdown.current.classList.remove("active-dropdown")
 
-    if (name && url === prevUrl && favicon === preFavicon) {
-      console.log();
+    if (url !== name && url === prevUrl && favicon === preFavicon) {
       shortcuts.forEach((shortcut, i) => {
         if (i === index) {
           shortcut.title = name
@@ -394,7 +386,20 @@ export class App extends Component {
   }
 
   removeShortcut = async (index) => {
-    clearTimeout(this.toastTimout);
+
+    if (this.undo.current.classList.contains('show')) {
+      clearTimeout(this.toastTimout.current);
+      this.undo.current.classList.remove('show');
+      setTimeout(() => {
+        this.removeShortcut(index);
+      }, 200); // To ensure smooth removal and re-showing of the toast
+    } else {
+      this.undo.current.classList.add("show")
+
+      this.toastTimout.current = setTimeout(() => {
+        this.undo.current.classList.remove("show")
+      }, 4000)
+    }
 
     await this.setState({
       undo: this.state.shortcuts
@@ -408,18 +413,13 @@ export class App extends Component {
       shortcuts: shortcuts
     })
 
-    this.undo.current.classList.add("show")
-
-    this.toastTimout = setTimeout(() => {
-      this.undo.current.classList.remove("show")
-    }, 4000)
-
   }
 
   handleMenu = () => {
     if (!this.menu.current.classList.contains("active-menu")) {
       this.confirm.current.classList.remove("active-confirm")
     }
+    this.app.current.classList.toggle("active-fold")
     this.menu.current.classList.toggle("active-menu")
   }
 
@@ -448,6 +448,7 @@ export class App extends Component {
       document.documentElement.style.setProperty('--background-color-3', this.state.color || '#202020');
       document.documentElement.style.setProperty('--background-color-4', '#013d9e');
       document.documentElement.style.setProperty('--background-color-5', '#74a9ff');
+      document.documentElement.style.setProperty('--background-color-6', '#2873ec');
       document.documentElement.style.setProperty('--background-color-a', '#e6f5ff');
       document.documentElement.style.setProperty('--background-color-b', '#e1e3e1');
       document.documentElement.style.setProperty('--background-color-c', '#e6f5ff');
@@ -470,6 +471,7 @@ export class App extends Component {
       document.documentElement.style.setProperty('--background-color-3', this.state.color || '#ffffff');
       document.documentElement.style.setProperty('--background-color-4', '#80adf6');
       document.documentElement.style.setProperty('--background-color-5', '#045d87');
+      document.documentElement.style.setProperty('--background-color-6', '#77b0ff');
       document.documentElement.style.setProperty('--background-color-a', '#303030');
       document.documentElement.style.setProperty('--background-color-b', '#252525');
       document.documentElement.style.setProperty('--background-color-c', '#404040');
@@ -491,70 +493,98 @@ export class App extends Component {
   }
 
   handleBackground = async () => {
-    const file = this.image.current.files[0]
+    const overview = this.overview.current
+    const preview = this.preview.current
+    overview.style.display = "block"
+    preview.style.display = "none"
+
+    this.setState({
+      loading: true
+    })
+
+    const file = await this.image.current.files[0]
 
     if (file) {
       // const blobURL = URL.createObjectURL(file);
       const reader = new FileReader();
       reader.onload = (e) => {
-        this.setState({
-          background: e.target.result
-        })
+        try {
+          localStorage.setItem("background", e.target.result)
 
-        localStorage.setItem("background", e.target.result)
-
-        const img = new Image();
-        img.onload = () => {
-          const canvas = document.createElement('canvas');
-          const context = canvas.getContext('2d');
-          canvas.width = img.width;
-          canvas.height = img.height;
-          context.drawImage(img, 0, 0, img.width, img.height);
-
-          const imageData = context.getImageData(0, 0, img.width, img.height);
-          const data = imageData.data;
-
-          let r, g, b, avg;
-          let colorSum = 0;
-
-          for (let x = 0, len = data.length; x < len; x += 4) {
-            r = data[x];
-            g = data[x + 1];
-            b = data[x + 2];
-
-            avg = Math.floor((r + g + b) / 3);
-            colorSum += avg;
-          }
-
-          const brightness = Math.floor(colorSum / (img.width * img.height));
-
-          if (brightness < 128) {
+          setTimeout(() => {
             this.setState({
-              color: "#ffffff"
+              loading: false,
+              background: e.target.result
             })
+            this.showStatus("Background has been set successfully.", "success", 1.5)
+          }, 500);
 
-            localStorage.setItem("color", "#ffffff")
-          } else {
+          const img = new Image();
+          img.onload = () => {
+            const canvas = document.createElement('canvas');
+            const context = canvas.getContext('2d');
+            canvas.width = img.width;
+            canvas.height = img.height;
+            context.drawImage(img, 0, 0, img.width, img.height);
+
+            const imageData = context.getImageData(0, 0, img.width, img.height);
+            const data = imageData.data;
+
+            let r, g, b, avg;
+            let colorSum = 0;
+
+            for (let x = 0, len = data.length; x < len; x += 4) {
+              r = data[x];
+              g = data[x + 1];
+              b = data[x + 2];
+
+              avg = Math.floor((r + g + b) / 3);
+              colorSum += avg;
+            }
+
+            const brightness = Math.floor(colorSum / (img.width * img.height));
+
+            if (brightness < 128) {
+              this.setState({
+                color: "#ffffff"
+              })
+
+              localStorage.setItem("color", "#ffffff")
+            } else {
+              this.setState({
+                color: "#202020"
+              })
+
+              localStorage.setItem("color", "#202020")
+            }
+          };
+          img.src = e.target.result;
+
+        } catch (error) {
+
+          setTimeout(() => {
             this.setState({
-              color: "#202020"
+              loading: false
             })
+            this.showStatus("Image size exceeded, failed to set background.", "error")
+          }, 500);
 
-            localStorage.setItem("color", "#202020")
-          }
-        };
-        img.src = e.target.result;
+        }
       };
       reader.readAsDataURL(file);
     }
+
+    this.image.current.value = null
   }
 
-  applyBackground = () => {
+  applyBackground = async () => {
     const background = this.state.background
-    const overview = this.preview.current
-    const preview = overview.querySelector("img")
+    const overview = this.overview.current
+    const preview = this.preview.current
 
     if (background) {
       preview.src = background
+      preview.style.display = "block"
       overview.style.display = "block"
       document.body.style.backgroundImage = `url(${background})`;
     } else {
@@ -567,6 +597,7 @@ export class App extends Component {
   removeBackground = () => {
     this.image.current.value = null
     this.setState({
+      loading: false,
       background: null,
       text: null
     })
@@ -606,7 +637,9 @@ export class App extends Component {
     })
   }
 
-  showStatus = (title, type) => {
+  showStatus = (title, type, timeout = 3) => {
+    timeout = timeout * 1000
+
     const status = this.status.current.querySelector(".status-title")
     clearTimeout(this.timer)
 
@@ -623,7 +656,7 @@ export class App extends Component {
 
     this.timer = setTimeout(() => {
       this.status.current.classList.remove("active-status")
-    }, 3000);
+    }, timeout);
 
   }
 
@@ -790,11 +823,38 @@ export class App extends Component {
     }
 
     this.undo.current.classList.remove("show")
-    clearTimeout(this.toastTimout);
+    clearTimeout(this.toastTimout.current);
   }
 
   handleDropdown = () => {
     this.dropdown.current.classList.toggle("active-dropdown")
+  }
+
+  handleMouseMove = (event) => {
+    const tooltip = this.tooltip.current;
+    const shortcut = event.currentTarget
+    const menu = shortcut.querySelector(".menu");
+    const title = shortcut.querySelector(".title").textContent;
+    clearTimeout(this.toolTimer)
+
+    if (!menu.classList.contains("active-menu")) {
+      this.toolTimer = setTimeout(() => {
+      if (!tooltip.style.display  || tooltip.style.display === "none") {
+        tooltip.textContent = title;
+        tooltip.style.display = "block";
+        tooltip.style.left = `${event.pageX + 15}px`;
+        tooltip.style.top = `${event.pageY + 15}px`;
+      }
+      }, 500);
+    } else {
+      this.tooltip.current.style.display = "none"
+    }
+
+  }
+
+  handleMouseLeave = () => {
+    clearTimeout(this.toolTimer)
+    this.tooltip.current.style.display = "none"
   }
 
   handleEnterPress = (event) => {
@@ -818,6 +878,7 @@ export class App extends Component {
       this.menu.current.classList.contains("active-menu")
       && !editElement.contains(event.target) && !menuElement.contains(event.target)
     ) {
+      this.app.current.classList.toggle("active-fold")
       this.menu.current.classList.remove("active-menu")
     }
   }
@@ -853,7 +914,7 @@ export class App extends Component {
       this.applyTheme()
     }
 
-    if (this.state.background !== prevProps.background) {
+    if (!this.state.loading && this.state.background !== prevProps.background) {
       this.applyBackground()
     }
 
@@ -869,25 +930,15 @@ export class App extends Component {
   render() {
 
     return (
-      <div className='app'>
+      <div className='app' ref={this.app}>
         {
           /* <div className="nav">
             <iframe src="https://ogs.google.com/u/0/widget/app?bc=1" width={800} height={300}></iframe>
             <iframe src="https://ogs.google.com/u/0/widget/account" width={800} height={300}></iframe>
           </div> */
         }
-        <div className={`google-logo ${this.state.theme !== "dark" && "colored"}`}>
-          <h1>G</h1>
-          <h1>o</h1>
-          <h1>o</h1>
-          <h1>g</h1>
-          <h1>l</h1>
-          <h1>e</h1>
-        </div>
-        <div className="search">
-          <FaIcons.FaSearch className="search-icon" />
-          <input ref={this.search} type="text" name="search" placeholder="Search Google or type a URL" />
-        </div>
+        <Logo theme={this.state.theme} />
+        <Search reference={this.search} />
 
         <div className="customize" ref={this.menu}>
           <div className="edit" onClick={this.handleMenu}>
@@ -925,11 +976,17 @@ export class App extends Component {
                 <div className="menu-content">
                   <span className="content-title">Background</span>
                   <div className="background">
-                    <div className="bg-overview" ref={this.preview}>
+                    <div className="bg-overview" ref={this.overview}>
                       <div className="remove-bg" onClick={this.removeBackground}>
                         <MdIcons.MdClose className="close-icon" />
                       </div>
-                      <img src="" alt="preview-bg" />
+                      {
+                        this.state.loading &&
+                        <div className="bg-loading" ref={this.loading}>
+                          <Spinner />
+                        </div>
+                      }
+                      <img className="bg-preview" src="" alt="preview-bg" ref={this.preview} />
                     </div>
                     <label className="change-btn">
                       <input type="file" accept="image/*" ref={this.image} onChange={this.handleBackground} />
@@ -952,7 +1009,7 @@ export class App extends Component {
                   <div className="clear-shortcut">
                     <div className="clear-content" onClick={() => this.executeConfirm(this.clearShortcuts)}>
                       <span className="clear-title">Clear all shortcuts</span>
-                        <MdIcons.MdRotateLeft className="clear-icon" />
+                      <MdIcons.MdRotateLeft className="clear-icon" />
                     </div>
                   </div>
                 </div>
@@ -1075,7 +1132,9 @@ export class App extends Component {
                   }
                   onDragStart={(e) => this.handleDragStart(e, index)}
                   onDragOver={(e) => this.handleDragOver(e, index)}
-                  onDragEnd={(e) => this.handleDragEnd(e)}
+                  onDragEnd={this.handleDragEnd}
+                  onMouseMove={this.handleMouseMove}
+                  onMouseLeave={this.handleMouseLeave}
                 >
                   <Shortcut remove={this.removeShortcut} editModal={this.editModal} index={index} shortcut={shortcut} />
                 </div>
@@ -1089,6 +1148,7 @@ export class App extends Component {
             </div>
           </div>
         </div>
+				<div id="tooltip" className="tooltip" ref={this.tooltip}></div>
       </div>
     )
   }
