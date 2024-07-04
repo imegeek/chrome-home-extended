@@ -1,10 +1,11 @@
+import { Component, createRef } from 'react'
 import * as FaIcons from "react-icons/fa";
 import * as MdIcons from "react-icons/md";
-import { Component, createRef } from 'react'
-import Shortcut from "./components/Shortcut";
-import Spinner from "./components/Spinner";
 import Logo from "./components/Logo";
 import Search from "./components/Search";
+import Shortcut from "./components/Shortcut";
+import Spinner from "./components/Spinner";
+import Toggle from "./components/Toggle";
 import './App.css'
 
 export class App extends Component {
@@ -18,13 +19,12 @@ export class App extends Component {
       color: localStorage.getItem("color"),
       shortcuts: JSON.parse(localStorage.getItem("shortcuts")) || [],
       showShortcuts: localStorage.getItem("showShortcuts") || "true",
-      undo: null,
-      input: {},
+      saveShortcut: true,
+      draggedIndex: null,
+      newFavicon: null,
       loading: false,
       favicons: [],
-      newFavicon: null,
-      saveShortcut: true,
-      draggedIndex: null
+      input: {}
     }
 
     this.app = createRef()
@@ -36,7 +36,7 @@ export class App extends Component {
     this.preview = createRef()
     this.confirm = createRef()
     this.status = createRef()
-    this.undo = createRef()
+    this.toast = createRef()
     this.toastTimout = createRef()
     this.modal = createRef()
     this.dropdown = createRef()
@@ -71,8 +71,8 @@ export class App extends Component {
       newFavicon: null,
       saveShortcut: true
     })
-    this.modalUrlInput.current.focus()
     this.modal.current.classList.toggle("open")
+    this.modalUrlInput.current.focus()
     this.dropdown.current.classList.remove("active-dropdown")
   }
 
@@ -191,7 +191,7 @@ export class App extends Component {
     }
   }
 
-  addShortcut = async () => {
+  addShortcut = async (event, prev = this.state.shortcuts) => {
     let { url } = this.state.input
     let { name, favicon } = this.state.input
 
@@ -211,6 +211,8 @@ export class App extends Component {
     })
     const lastShortcut = this.state.shortcuts.length - 1
     this.handleModal()
+
+    this.showToast("Shortcut added", prev)
 
     try {
       const response = await this.fetchFavicon(url)
@@ -245,7 +247,7 @@ export class App extends Component {
     }
   }
 
-  editShortcut = async () => {
+  editShortcut = async (prev = this.state.shortcuts) => {
     let { url } = this.state.input
     const { name, favicon, index, prevName, prevUrl, preFavicon } = this.state.input
 
@@ -253,9 +255,12 @@ export class App extends Component {
       url = "https://".concat(url)
     }
 
-    let shortcuts = this.state.shortcuts.concat();
+    // Create a deep copy of the shortcuts array
+    let shortcuts = JSON.parse(JSON.stringify(this.state.shortcuts));
     this.modal.current.classList.toggle("open")
     this.dropdown.current.classList.remove("active-dropdown")
+
+    this.showToast("Shortcut edited", prev)
 
     if (url !== name && url === prevUrl && favicon === preFavicon) {
       shortcuts.forEach((shortcut, i) => {
@@ -385,26 +390,42 @@ export class App extends Component {
     })
   }
 
-  removeShortcut = async (index) => {
+  showToast = (title, prev) => {
+    const toast = this.toast.current
+    toast.querySelector(".title").textContent = title
+    const undo = toast.querySelector(".undo")
 
-    if (this.undo.current.classList.contains('show')) {
-      clearTimeout(this.toastTimout.current);
-      this.undo.current.classList.remove('show');
-      setTimeout(() => {
-        this.removeShortcut(index);
-      }, 200); // To ensure smooth removal and re-showing of the toast
-    } else {
-      this.undo.current.classList.add("show")
-
-      this.toastTimout.current = setTimeout(() => {
-        this.undo.current.classList.remove("show")
-      }, 4000)
+    if (this.undoShortcut) {
+      undo.removeEventListener("click", this.undoShortcut)
     }
 
-    await this.setState({
-      undo: this.state.shortcuts
-    })
+    if (toast.classList.contains('show')) {
+      clearTimeout(this.toastTimout.current);
+      toast.classList.remove('show');
+      setTimeout(() => {
+        this.showToast(title, prev);
+      }, 200); // To ensure smooth removal and re-showing of the toast
+    } else {
 
+      this.undoShortcut = () => {
+        this.setState({
+          shortcuts: prev
+        })
+
+        toast.classList.remove("show")
+        clearTimeout(this.toastTimout.current);
+      }
+
+      toast.classList.add("show")
+      undo.addEventListener("click", this.undoShortcut)
+
+      this.toastTimout.current = setTimeout(() => {
+        toast.classList.remove("show")
+      }, 4000)
+    }
+  }
+
+  removeShortcut = async (index, prev = this.state.shortcuts) => {
     const shortcuts = this.state.shortcuts.filter((shortcut, i) => {
       return index !== i
     })
@@ -413,6 +434,7 @@ export class App extends Component {
       shortcuts: shortcuts
     })
 
+    this.showToast("Shortcut removed", prev)
   }
 
   handleMenu = () => {
@@ -432,15 +454,26 @@ export class App extends Component {
   }
 
   applyTheme = () => {
-    const themeOverlay = document.querySelector(".theme-overlay")
-    const activeTheme = document.querySelector(".active-theme")
-    themeOverlay.style.width = activeTheme.offsetWidth + "px"
-    themeOverlay.style.height = activeTheme.offsetHeight + "px"
-    themeOverlay.style.left = activeTheme.offsetLeft + "px"
+    const setThemeOverlay = () => {
+      const themeOverlay = document.querySelector(".theme-overlay")
+      const activeTheme = document.querySelector(".active-theme")
+
+      // console.log("width: ", activeTheme.offsetWidth);
+      // console.log("height: ", activeTheme.offsetHeight);
+      // console.log("left: ", activeTheme.offsetLeft);
+
+      themeOverlay.style.width = activeTheme.offsetWidth + "px"
+      themeOverlay.style.height = activeTheme.offsetHeight + "px"
+      themeOverlay.style.left = activeTheme.offsetLeft + "px"
+    }
+
+    setTimeout(() => { setThemeOverlay() }, 0);
+
     // Get the default theme from the device
     const prefersDarkScheme = window.matchMedia('(prefers-color-scheme: dark)').matches;
     const defaultTheme = prefersDarkScheme ? 'dark' : 'light'
     const theme = this.state.theme
+
     if (theme === "light" || defaultTheme === "light") {
       document.documentElement.style.setProperty('--background-color-0', '#ffffff');
       document.documentElement.style.setProperty('--background-color-1', '#aaaaaa');
@@ -760,21 +793,19 @@ export class App extends Component {
     this.confirm.current.classList.add("active-confirm")
     const confirm = this.confirm.current.querySelector(".confirm-btn")
 
-    confirm.removeEventListener("click", () => { })
-
     // Remove the previous event listener if it exists
-    if (this.currentHandler) {
-      confirm.removeEventListener("click", this.currentHandler);
+    if (this.confirmHandler) {
+      confirm.removeEventListener("click", this.confirmHandler);
     }
 
     // Define the new click handler
-    this.currentHandler = () => {
+    this.confirmHandler = () => {
       func();
       document.querySelector(".confirm-box").classList.remove("active-confirm");
     };
 
     // Add the new event listener
-    confirm.addEventListener("click", this.currentHandler)
+    confirm.addEventListener("click", this.confirmHandler)
 
   }
 
@@ -815,17 +846,6 @@ export class App extends Component {
     })
   };
 
-  undoShortcut = () => {
-    if (this.state.undo) {
-      this.setState({
-        shortcuts: this.state.undo
-      })
-    }
-
-    this.undo.current.classList.remove("show")
-    clearTimeout(this.toastTimout.current);
-  }
-
   handleDropdown = () => {
     this.dropdown.current.classList.toggle("active-dropdown")
   }
@@ -839,12 +859,12 @@ export class App extends Component {
 
     if (!menu.classList.contains("active-menu")) {
       this.toolTimer = setTimeout(() => {
-      if (!tooltip.style.display  || tooltip.style.display === "none") {
-        tooltip.textContent = title;
-        tooltip.style.display = "block";
-        tooltip.style.left = `${event.pageX + 15}px`;
-        tooltip.style.top = `${event.pageY + 15}px`;
-      }
+        if (!tooltip.style.display || tooltip.style.display === "none") {
+          tooltip.textContent = title;
+          tooltip.style.display = "block";
+          tooltip.style.left = `${event.pageX + 15}px`;
+          tooltip.style.top = `${event.pageY + 15}px`;
+        }
       }, 500);
     } else {
       this.tooltip.current.style.display = "none"
@@ -1000,10 +1020,7 @@ export class App extends Component {
                   <span className="content-title">Shortcuts</span>
                   <div className="show-shortcut">
                     <span className="sub-title">Show shortcuts</span>
-                    <label className="switch">
-                      <input type="checkbox" name="checkbox" checked={this.state.showShortcuts === "true" ? true : false} onChange={this.handleShortcuts} />
-                      <div className="slider"></div>
-                    </label>
+                    <Toggle checked={this.state.showShortcuts === "true" ? true : false} onChange={this.handleShortcuts} />
                   </div>
                   <div className="hr"></div>
                   <div className="clear-shortcut">
@@ -1063,9 +1080,9 @@ export class App extends Component {
           </div>
         </div>
 
-        <div className="undo-toast" ref={this.undo}>
-          <span>Shortcut removed</span>
-          <span onClick={this.undoShortcut} className="undo">Undo</span>
+        <div className="toast" ref={this.toast}>
+          <span className="title"></span>
+          <span className="undo">Undo</span>
         </div>
 
         <div className="modal" ref={this.modal}>
@@ -1148,7 +1165,7 @@ export class App extends Component {
             </div>
           </div>
         </div>
-				<div id="tooltip" className="tooltip" ref={this.tooltip}></div>
+        <div id="tooltip" className="tooltip" ref={this.tooltip}></div>
       </div>
     )
   }
